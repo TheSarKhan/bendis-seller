@@ -3,10 +3,14 @@ spring:
     name: seller-service
 
   datasource:
-    url: jdbc:postgresql://users_service:5432/User
-    username: root
-    password: root
-
+    first:
+     url:  jdbc:postgresql://localhost:5451/User
+     username: root
+     password: root
+    second:
+      url:  jdbc:postgresql://localhost:5452/Seller
+      username: root
+      password: root
   jpa:
     hibernate:
       ddl-auto: update
