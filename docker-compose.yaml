@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - '6380:6379'
+    networks:
+      - bendis
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  users_service:
+    container_name: user
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: User
+    ports:
+      - '5450:5432'
+    volumes:
+      - UserData:/var/lib/postgresql/data
+    networks:
+      - bendis
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "root" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  seller_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seller-service
+    ports:
+      - '8085:8085'
+    depends_on:
+      - redis
+      - users_service
+    networks:
+      - bendis
+
+volumes:
+  redis_data: {}
+  UserData: {}
+
+networks:
+  bendis:
+    driver: bridge
