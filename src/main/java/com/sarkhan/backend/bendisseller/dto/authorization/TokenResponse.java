@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TokenResponse {
 
-    private String accessToken; // Access token
-    private String refreshToken; // Refresh token əlavə edildi
+    private String accessToken;
+    private String refreshToken;
 }

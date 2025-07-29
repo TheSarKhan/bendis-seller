@@ -5,9 +5,9 @@ import com.sarkhan.backend.bendisseller.jwt.JwtService;
 import com.sarkhan.backend.bendisseller.model.enums.OrderStatus;
 import com.sarkhan.backend.bendisseller.model.order.OrderItem;
 import com.sarkhan.backend.bendisseller.model.product.Product;
-import com.sarkhan.backend.bendisseller.repository.OrderItemRepository;
-import com.sarkhan.backend.bendisseller.repository.ProductRepository;
-import com.sarkhan.backend.bendisseller.repository.SellerRepository;
+import com.sarkhan.backend.bendisseller.repository.order.OrderItemRepository;
+import com.sarkhan.backend.bendisseller.repository.product.ProductRepository;
+import com.sarkhan.backend.bendisseller.repository.seller.UserRepository;
 import com.sarkhan.backend.bendisseller.service.SellerDashboardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class SellerDashboardServiceImpl implements SellerDashboardService {
     private final OrderItemRepository orderRepository;
     private final ProductRepository productRepository;
     private final JwtService jwtService;
-    private final SellerRepository sellerRepository;
+    private final UserRepository sellerRepository;
 
     @Override
     public BigDecimal getTotalRevenue(Long sellerId) {

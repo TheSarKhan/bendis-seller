@@ -3,8 +3,8 @@ package com.sarkhan.backend.bendisseller.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sarkhan.backend.bendisseller.jwt.JwtService;
-import com.sarkhan.backend.bendisseller.model.User;
-import com.sarkhan.backend.bendisseller.repository.UserRepository;
+import com.sarkhan.backend.bendisseller.model.user.User;
+import com.sarkhan.backend.bendisseller.repository.seller.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +30,15 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
 
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findByBrandEmail(email);
         if (optionalUser.isEmpty()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found.");
             return;
         }
 
         User user = optionalUser.get();
-        String accessToken = jwtService.generateAccessToken(user.getEmail(),null);
-        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        String accessToken = jwtService.generateAccessToken(user.getBrandEmail(),null);
+        String refreshToken = jwtService.generateRefreshToken(user.getBrandEmail());
 
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(Map.of("accessToken", accessToken, "refreshToken", refreshToken)));

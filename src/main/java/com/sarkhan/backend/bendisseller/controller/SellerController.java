@@ -1,6 +1,5 @@
 package com.sarkhan.backend.bendisseller.controller;
 
-import com.sarkhan.backend.bendisseller.dto.seller.SellerRequestDTO;
 import com.sarkhan.backend.bendisseller.dto.seller.SellerResponseDTO;
 import com.sarkhan.backend.bendisseller.dto.seller.UpdateSellerRequestDto;
 import com.sarkhan.backend.bendisseller.exception.DataNotFoundException;
@@ -30,13 +29,6 @@ public class SellerController {
             token = token.substring(7);
         }
         return ResponseEntity.ok(sellerService.getByToken(token));
-    }
-
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SellerResponseDTO> add(@RequestBody SellerRequestDTO sellerRequestDTO,
-                                                 @RequestHeader("Authorization") String token) throws DataNotFoundException {
-        return ResponseEntity.ok(sellerService.createSeller(sellerRequestDTO, token));
     }
 
     @PutMapping

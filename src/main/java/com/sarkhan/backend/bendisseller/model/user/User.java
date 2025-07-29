@@ -1,14 +1,11 @@
-package com.sarkhan.backend.bendisseller.model;
+package com.sarkhan.backend.bendisseller.model.user;
 
-import com.sarkhan.backend.bendisseller.model.enums.Gender;
 import com.sarkhan.backend.bendisseller.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -27,19 +24,13 @@ User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String fullName;
-    String googleId;
-    String profileImg;
-    String email;
-    String refreshToken;
+    String brandName;
+    String brandEmail;
+    String brandVOEN;
+    String fatherName;
+    String finCode;
+    String brandPhone;
     String password;
-    Gender gender;
-    String userCode;
-    String countryCode;
-    String phoneNumber;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    BirthDate birthDate;
-
     @CreationTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDateTime createdAt;
@@ -51,8 +42,4 @@ User {
     @Enumerated(EnumType.STRING)
     Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    @JdbcTypeCode(SqlTypes.JSON)
-    Seller seller;
 }

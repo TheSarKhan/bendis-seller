@@ -1,4 +1,4 @@
-package com.sarkhan.backend.bendisseller.repository;
+package com.sarkhan.backend.bendisseller.repository.product;
 
 import com.sarkhan.backend.bendisseller.model.product.Product;
 import org.springframework.data.domain.Pageable;

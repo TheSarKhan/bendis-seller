@@ -1,9 +1,10 @@
+
 services:
   redis:
     image: redis:7.2
-    container_name: redis
+    container_name: bendis_seller_redis
     ports:
-      - '6380:6379'
+      - '6381:6379'
     networks:
       - bendis_seller
     volumes:
@@ -15,29 +16,66 @@ services:
       retries: 5
 
   seller_service:
-    restart: always
-    container_name: seller
     image: postgres
+    container_name: seller_service
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: Seller
+      POSTGRES_DB: User
     ports:
-      - '5452:5432'
+      - '5450:5432'
     volumes:
       - SellerData:/var/lib/postgresql/data
     networks:
       - bendis_seller
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "root" ]
+      test: [ "CMD", "pg_isready", "-U", "root", "-d", "User" ]  # Modified here
       interval: 5s
       timeout: 5s
       retries: 5
 
+  product_service:
+    image: postgres
+    container_name: product_service
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: Product
+    ports:
+      - '5451:5432'
+    volumes:
+      - ProductData:/var/lib/postgresql/data
+    networks:
+      - bendis_seller
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "root", "-d", "Product" ]  # Modified here
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  order_service:
+    image: postgres
+    container_name: order_service
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: Order
+    ports:
+      - '5452:5432'
+    volumes:
+      - OrderData:/var/lib/postgresql/data
+    networks:
+      - bendis_seller
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "root", "-d", "Order" ]  # Modified here
+      interval: 5s
+      timeout: 5s
+      retries: 5
 volumes:
   redis_data: {}
-  UserData: {}
   SellerData: {}
+  ProductData: {}
+  OrderData: {}
+
 networks:
   bendis_seller:
     driver: bridge

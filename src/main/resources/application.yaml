@@ -4,13 +4,18 @@ spring:
 
   datasource:
     first:
-     url:  jdbc:postgresql://localhost:5451/User
-     username: root
-     password: root
-    second:
-      url:  jdbc:postgresql://localhost:5452/Seller
+      url: jdbc:postgresql://localhost:5450/User
       username: root
       password: root
+    second:
+      url: jdbc:postgresql://localhost:5451/Product
+      username: root
+      password: root
+    third:
+      url: jdbc:postgresql://localhost:5452/Order
+      username: root
+      password: root
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,42 +28,3 @@ spring:
     redis:
       host: redis
       port: 6379
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: serxan.babayev.06@gmail.com
-    password: klmp yxwd jtdz ptmn
-    properties:
-      mail:
-        transport.protocol: smtp
-        smtp:
-          auth: true
-          starttls.enable: true
-        debug: true
-
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: http://localhost:8085/login/oauth2/code/google
-            scope: openid email profile
-      provider:
-        google:
-          authorization-uri: https://accounts.google.com/o/oauth2/auth
-          token-uri: https://oauth2.googleapis.com/token
-          user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
-
-cloudinary:
-  cloud:
-    name: dddwkgrcy
-  api:
-    key: 668583881613156
-    secret: 7jymaVAgMxu5Pc50toz0YvwJ2ro
-
-server:
-  port: 8085

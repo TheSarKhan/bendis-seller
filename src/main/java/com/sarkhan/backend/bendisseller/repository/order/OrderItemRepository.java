@@ -1,4 +1,4 @@
-package com.sarkhan.backend.bendisseller.repository;
+package com.sarkhan.backend.bendisseller.repository.order;
 
 import com.sarkhan.backend.bendisseller.model.enums.OrderStatus;
 import com.sarkhan.backend.bendisseller.model.order.Order;

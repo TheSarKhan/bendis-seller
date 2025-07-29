@@ -1,6 +1,6 @@
 package com.sarkhan.backend.bendisseller.jwt;
 
-import com.sarkhan.backend.bendisseller.service.UserService;
+import com.sarkhan.backend.bendisseller.service.SellerService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private final UserService userService;
+    private final SellerService userService;
 
     private final JwtService jwtService;
 
@@ -42,8 +42,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtService.isTokenValid(jwt, email)) {
-                var user = userService.getByEmail(email);
-                System.out.println("Authenticated user: " + user.getEmail() + " | Role: " + user.getRole());
+                var user = userService.getByBrandEmail(email);
+                System.out.println("Authenticated user: " + user.getBrandEmail() + " | Role: " + user.getRole());
 
                 List<SimpleGrantedAuthority> authorities =
                         List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()));

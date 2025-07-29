@@ -3,7 +3,6 @@ package com.sarkhan.backend.bendisseller.config;
 import com.sarkhan.backend.bendisseller.handler.CustomAccessDeniedHandler;
 import com.sarkhan.backend.bendisseller.handler.CustomAuthenticationEntryPoint;
 import com.sarkhan.backend.bendisseller.jwt.JwtFilter;
-import com.sarkhan.backend.bendisseller.service.impl.CustomOAuth2UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +44,6 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final CustomOAuth2UserServiceImpl customOAuth2UserServiceImpl;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
@@ -115,7 +113,6 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserServiceImpl))
                         .successHandler((request, response, authentication) -> {
                             response.sendRedirect("/home");
                         })

@@ -4,19 +4,17 @@ import com.sarkhan.backend.bendisseller.dto.authorization.LoginRequest;
 import com.sarkhan.backend.bendisseller.dto.authorization.RegisterRequest;
 import com.sarkhan.backend.bendisseller.dto.authorization.TokenResponse;
 import com.sarkhan.backend.bendisseller.jwt.JwtService;
-import com.sarkhan.backend.bendisseller.model.User;
+import com.sarkhan.backend.bendisseller.model.user.User;
 import com.sarkhan.backend.bendisseller.model.enums.Role;
 import com.sarkhan.backend.bendisseller.redis.RedisService;
-import com.sarkhan.backend.bendisseller.repository.UserRepository;
+import com.sarkhan.backend.bendisseller.repository.seller.UserRepository;
 import com.sarkhan.backend.bendisseller.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,24 +27,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public TokenResponse register(RegisterRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.findByBrandEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email artıq qeydiyyatdan keçib!");
         }
         LocalDateTime now = LocalDateTime.now();
         String refreshToken = jwtService.generateRefreshToken(request.getEmail());
         redisService.saveRefreshToken(request.getEmail(), refreshToken, 7);
         User user = new User();
-        Set<Role> roles = new HashSet<>();
-        roles.add(Role.USER);
-      //  user.setRoles(roles);
+        user.setRole(Role.SELLER);
         user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
+        user.setBrandEmail(request.getEmail());
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
-
-        String accessToken = jwtService.generateAccessToken(request.getEmail(), null); // Claims kısmı null olabilir
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email",user.getRole());
+        claims.put("userId",user.getId());
+        String accessToken = jwtService.generateAccessToken(request.getEmail(), claims);
 
         redisService.saveTokenToRedis(accessToken, request.getEmail());
 
@@ -55,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public TokenResponse login(LoginRequest request) {
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        Optional<User> userOptional = userRepository.findByBrandEmail(request.getEmail());
 
         if (userOptional.isEmpty()) {
             throw new RuntimeException("Email tapılmadı və ya səhvdir");
@@ -67,8 +65,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("Yanlış şifrə");
         }
 
-        String accessToken = jwtService.generateAccessToken(user.getEmail(), null);
-        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        String accessToken = jwtService.generateAccessToken(user.getBrandEmail(), null);
+        String refreshToken = jwtService.generateRefreshToken(user.getBrandEmail());
 
         return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
