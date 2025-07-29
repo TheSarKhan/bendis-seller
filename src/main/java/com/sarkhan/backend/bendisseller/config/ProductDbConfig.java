@@ -39,8 +39,8 @@ public class ProductDbConfig {
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String secondDbDdlAuto;
 
-    @Bean(name = "secondDataSource")
-    public DataSource secondDataSource() {
+    @Bean(name = "secondDataSource", destroyMethod = "close")
+    public HikariDataSource secondDataSource() {
         HikariDataSource dataSource = DataSourceBuilder.create()
                 .type(HikariDataSource.class)
                 .url(secondDbUrl)
@@ -58,7 +58,7 @@ public class ProductDbConfig {
             @Qualifier("secondDataSource") DataSource secondDataSource) {
         return builder
                 .dataSource(secondDataSource)
-                .packages("com.sarkhan.backend.model.product")
+                .packages("com.sarkhan.backend.bendisseller.model.product")
                 .persistenceUnit("second")
                 .properties(hibernateProperties())
                 .build();

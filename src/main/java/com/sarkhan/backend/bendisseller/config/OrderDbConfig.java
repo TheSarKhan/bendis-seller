@@ -39,8 +39,8 @@ public class OrderDbConfig {
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String thirdDbDdlAuto;
 
-    @Bean(name = "thirdDataSource")
-    public DataSource sixthDataSource() {
+    @Bean(name = "thirdDataSource", destroyMethod = "close")
+    public HikariDataSource thirdDataSource() {
         HikariDataSource dataSource = DataSourceBuilder.create()
                 .type(HikariDataSource.class)
                 .url(thirdDbUrl)
@@ -53,20 +53,19 @@ public class OrderDbConfig {
     }
 
     @Bean(name = "thirdEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean sixthEntityManagerFactory(
+    public LocalContainerEntityManagerFactoryBean thirdEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
             @Qualifier("thirdDataSource") DataSource sixthDataSource) {
         return builder
                 .dataSource(sixthDataSource)
-                .packages("com.sarkhan.backend.model.order")
-                // Düzəliş: kiçik hərflə
+                .packages("com.sarkhan.backend.bendisseller.model.order")
                 .persistenceUnit("third")
                 .properties(hibernateProperties())
                 .build();
     }
 
     @Bean(name = "thirdTransactionManager")
-    public PlatformTransactionManager sixthTransactionManager(
+    public PlatformTransactionManager thirdTransactionManager(
             @Qualifier("thirdEntityManagerFactory") EntityManagerFactory sixthEntityManagerFactory) {
         return new JpaTransactionManager(sixthEntityManagerFactory);
     }

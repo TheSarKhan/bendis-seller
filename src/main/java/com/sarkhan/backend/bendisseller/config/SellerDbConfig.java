@@ -16,14 +16,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
+
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
         basePackages = "com.sarkhan.backend.bendisseller.repository.seller",
-        entityManagerFactoryRef = "entityManagerFactory",
+        entityManagerFactoryRef = "firstEntityManagerFactory",
         transactionManagerRef = "firstTransactionManager"
 )
 public class SellerDbConfig {
@@ -37,45 +36,33 @@ public class SellerDbConfig {
     @Value("${spring.datasource.first.password}")
     private String firstDbPassword;
 
-    @Value("${spring.jpa.hibernate.ddl-auto}")
-    private String firstDbDdlAuto;
-
+    @Bean(name = "firstDataSource", destroyMethod = "close")
     @Primary
-    @Bean(name = "firstDataSource")
-    public DataSource firstDataSource() {
-        HikariDataSource dataSource = DataSourceBuilder.create()
-                .type(HikariDataSource.class)
-                .url(firstDbUrl)
-                .username(firstDbUsername)
-                .password(firstDbPassword)
-                .build();
+    public HikariDataSource firstDataSource() {
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(firstDbUrl);
+        dataSource.setUsername(firstDbUsername);
+        dataSource.setPassword(firstDbPassword);
         dataSource.setPoolName("SellerDbHikariPool");
         return dataSource;
     }
 
+    @Bean(name = "firstEntityManagerFactory")
     @Primary
-    @Bean(name = "entityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+    public LocalContainerEntityManagerFactoryBean firstEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
             @Qualifier("firstDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.sarkhan.backend.model.user")
+                .packages("com.sarkhan.backend.bendisseller.model.user")
                 .persistenceUnit("first")
-                .properties(hibernateProperties())
                 .build();
     }
 
-    @Primary
     @Bean(name = "firstTransactionManager")
+    @Primary
     public PlatformTransactionManager firstTransactionManager(
-            @Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-        return new JpaTransactionManager(entityManagerFactory);
-    }
-
-    private Map<String, Object> hibernateProperties() {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", firstDbDdlAuto);
-        return properties;
+            @Qualifier("firstEntityManagerFactory") EntityManagerFactory firstEntityManagerFactory) {
+        return new JpaTransactionManager(firstEntityManagerFactory);
     }
 }
