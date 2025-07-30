@@ -3,22 +3,21 @@ spring:
     name: seller-service
 
   datasource:
-    first:
-      url: jdbc:postgresql://localhost:5450/User
-      username: root
-      password: root
     second:
-      url: jdbc:postgresql://localhost:5451/Product
+      url: jdbc:postgresql://localhost:5452/Product
       username: root
       password: root
     third:
-      url: jdbc:postgresql://localhost:5452/Order
+      url: jdbc:postgresql://localhost:5453/Order
       username: root
       password: root
-
+    fourth:
+      url: jdbc:postgresql://localhost:5454/Seller
+      username: root
+      password: root
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:

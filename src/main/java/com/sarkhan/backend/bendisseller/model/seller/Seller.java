@@ -1,4 +1,4 @@
-package com.sarkhan.backend.bendisseller.model.user;
+package com.sarkhan.backend.bendisseller.model.seller;
 
 import com.sarkhan.backend.bendisseller.model.enums.Role;
 import jakarta.persistence.*;
@@ -7,22 +7,17 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 
 @Data
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "sellers")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class Seller {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,18 +42,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     Role role;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
 
-    @Override
-    public String getUsername() {
-        return this.brandEmail;
-    }
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
+
 
 }

@@ -4,16 +4,15 @@ import com.sarkhan.backend.bendisseller.dto.authorization.LoginRequest;
 import com.sarkhan.backend.bendisseller.dto.authorization.RegisterRequest;
 import com.sarkhan.backend.bendisseller.dto.authorization.TokenResponse;
 import com.sarkhan.backend.bendisseller.jwt.JwtService;
-import com.sarkhan.backend.bendisseller.model.user.User;
+import com.sarkhan.backend.bendisseller.model.seller.Seller;
 import com.sarkhan.backend.bendisseller.redis.RedisService;
-import com.sarkhan.backend.bendisseller.repository.seller.UserRepository;
+import com.sarkhan.backend.bendisseller.repository.seller.SellerRepository;
 import com.sarkhan.backend.bendisseller.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -24,7 +23,7 @@ public class AuthenticationController {
 
 
     private final AuthenticationService authenticationService;
-    private final UserRepository userRepository;
+    private final SellerRepository sellerRepository;
     private final JwtService jwtService;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
@@ -38,15 +37,15 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<User> user = userRepository.findByBrandEmail(request.getEmail());
+        Optional<Seller> seller = sellerRepository.findByBrandEmail(request.getEmail());
         TokenResponse tokenResponse = authenticationService.login(request);
         if (request.getEmail() == null || request.getPassword() == null) {
             return ResponseEntity.status(400).body("Email or Password is null");
         }
-        if (user.isEmpty()) {
+        if (seller.isEmpty()) {
             return ResponseEntity.status(400).body("Email does not exist");
         }
-        if (!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), seller.get().getPassword())) {
             return ResponseEntity.status(400).body("Passwords do not match");
         }
         return ResponseEntity.status(200).body(tokenResponse);

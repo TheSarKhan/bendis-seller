@@ -1,7 +1,7 @@
 package com.sarkhan.backend.bendisseller.init;
 
 import com.sarkhan.backend.bendisseller.exception.DataNotFoundException;
-import com.sarkhan.backend.bendisseller.model.user.User;
+import com.sarkhan.backend.bendisseller.model.seller.Seller;
 import com.sarkhan.backend.bendisseller.model.enums.Role;
 import com.sarkhan.backend.bendisseller.service.SellerService;
 import jakarta.annotation.PostConstruct;
@@ -20,13 +20,13 @@ public class UserDbInitializer {
 
     @PostConstruct
     public void init() throws DataNotFoundException {
-        User admin = User.builder()
+        Seller seller = Seller.builder()
                 .fullName("Admin")
                 .brandEmail("admin1234@gmail.com")
                 .password(passwordEncoder.encode("Admin123"))
                 .role(Role.ADMIN)
                 .build();
 
-        log.info("User created :" + userService.createSeller(admin));
+        log.info("User created :" + userService.createSeller(seller));
     }
 }

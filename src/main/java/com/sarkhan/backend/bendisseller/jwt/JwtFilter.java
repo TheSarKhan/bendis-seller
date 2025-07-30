@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private final SellerService userService;
+    private final SellerService sellerService;
 
     private final JwtService jwtService;
 
@@ -42,13 +42,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtService.isTokenValid(jwt, email)) {
-                var user = userService.getByBrandEmail(email);
-                System.out.println("Authenticated user: " + user.getBrandEmail() + " | Role: " + user.getRole());
+                var seller = sellerService.getByBrandEmail(email);
+                System.out.println("Authenticated user: " + seller.getBrandEmail() + " | Role: " + seller.getRole());
 
                 List<SimpleGrantedAuthority> authorities =
-                        List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+                        List.of(new SimpleGrantedAuthority("ROLE_" + seller.getRole()));
                 SecurityContextHolder.getContext().setAuthentication(
-                        new UsernamePasswordAuthenticationToken(user, null, authorities)
+                        new UsernamePasswordAuthenticationToken(seller, null, authorities)
                 );
             } else {
                 System.out.println("Token is not valid");

@@ -4,11 +4,11 @@ import com.sarkhan.backend.bendisseller.dto.authorization.LoginRequest;
 import com.sarkhan.backend.bendisseller.dto.authorization.RegisterRequest;
 import com.sarkhan.backend.bendisseller.dto.authorization.TokenResponse;
 import com.sarkhan.backend.bendisseller.jwt.JwtService;
-import com.sarkhan.backend.bendisseller.model.user.User;
-import com.sarkhan.backend.bendisseller.model.enums.Role;
+import com.sarkhan.backend.bendisseller.model.seller.Seller;
+ import com.sarkhan.backend.bendisseller.model.enums.Role;
 import com.sarkhan.backend.bendisseller.redis.RedisService;
-import com.sarkhan.backend.bendisseller.repository.seller.UserRepository;
-import com.sarkhan.backend.bendisseller.service.AuthenticationService;
+import com.sarkhan.backend.bendisseller.repository.seller.SellerRepository;
+ import com.sarkhan.backend.bendisseller.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,26 +21,26 @@ import java.util.*;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final SellerRepository sellerRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
 
     @Override
     public TokenResponse register(RegisterRequest request) {
-        if (userRepository.findByBrandEmail(request.getEmail()).isPresent()) {
+        if (sellerRepository.findByBrandEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email artıq qeydiyyatdan keçib!");
         }
         LocalDateTime now = LocalDateTime.now();
         String refreshToken = jwtService.generateRefreshToken(request.getEmail());
         redisService.saveRefreshToken(request.getEmail(), refreshToken, 7);
-        User user = new User();
+        Seller user = new Seller();
         user.setRole(Role.SELLER);
         user.setFullName(request.getFullName());
         user.setBrandEmail(request.getEmail());
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
+        sellerRepository.save(user);
         Map<String, Object> claims = new HashMap<>();
         claims.put("email",user.getRole());
         claims.put("userId",user.getId());
@@ -53,20 +53,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public TokenResponse login(LoginRequest request) {
-        Optional<User> userOptional = userRepository.findByBrandEmail(request.getEmail());
+        Optional<Seller> sellerOptional = sellerRepository.findByBrandEmail(request.getEmail());
 
-        if (userOptional.isEmpty()) {
+        if (sellerOptional.isEmpty()) {
             throw new RuntimeException("Email tapılmadı və ya səhvdir");
         }
 
-        User user = userOptional.get();
+        Seller seller = sellerOptional.get();
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), seller.getPassword())) {
             throw new RuntimeException("Yanlış şifrə");
         }
 
-        String accessToken = jwtService.generateAccessToken(user.getBrandEmail(), null);
-        String refreshToken = jwtService.generateRefreshToken(user.getBrandEmail());
+        String accessToken = jwtService.generateAccessToken(seller.getBrandEmail(), null);
+        String refreshToken = jwtService.generateRefreshToken(seller.getBrandEmail());
 
         return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }

@@ -22,47 +22,47 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         basePackages = "com.sarkhan.backend.bendisseller.repository.seller",
-        entityManagerFactoryRef = "firstEntityManagerFactory",
-        transactionManagerRef = "firstTransactionManager"
+        entityManagerFactoryRef = "fourthEntityManagerFactory",
+        transactionManagerRef = "fourthTransactionManager"
 )
 public class SellerDbConfig {
 
-    @Value("${spring.datasource.first.url}")
-    private String firstDbUrl;
+    @Value("${spring.datasource.fourth.url}")
+    private String fourthDbUrl;
 
-    @Value("${spring.datasource.first.username}")
-    private String firstDbUsername;
+    @Value("${spring.datasource.fourth.username}")
+    private String fourthDbUsername;
 
-    @Value("${spring.datasource.first.password}")
-    private String firstDbPassword;
+    @Value("${spring.datasource.fourth.password}")
+    private String fourthDbPassword;
 
-    @Bean(name = "firstDataSource", destroyMethod = "close")
+    @Bean(name = "fourthDataSource", destroyMethod = "close")
     @Primary
-    public HikariDataSource firstDataSource() {
+    public HikariDataSource fourthDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(firstDbUrl);
-        dataSource.setUsername(firstDbUsername);
-        dataSource.setPassword(firstDbPassword);
+        dataSource.setJdbcUrl(fourthDbUrl);
+        dataSource.setUsername(fourthDbUsername);
+        dataSource.setPassword(fourthDbPassword);
         dataSource.setPoolName("SellerDbHikariPool");
         return dataSource;
     }
 
-    @Bean(name = "firstEntityManagerFactory")
+    @Bean(name = "fourthEntityManagerFactory")
     @Primary
-    public LocalContainerEntityManagerFactoryBean firstEntityManagerFactory(
+    public LocalContainerEntityManagerFactoryBean fourthEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
-            @Qualifier("firstDataSource") DataSource dataSource) {
+            @Qualifier("fourthDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.sarkhan.backend.bendisseller.model.user")
-                .persistenceUnit("first")
+                .packages("com.sarkhan.backend.bendisseller.model.seller")
+                .persistenceUnit("fourth")
                 .build();
     }
 
-    @Bean(name = "firstTransactionManager")
+    @Bean(name = "fourthTransactionManager")
     @Primary
-    public PlatformTransactionManager firstTransactionManager(
-            @Qualifier("firstEntityManagerFactory") EntityManagerFactory firstEntityManagerFactory) {
-        return new JpaTransactionManager(firstEntityManagerFactory);
+    public PlatformTransactionManager fourthTransactionManager(
+            @Qualifier("fourthEntityManagerFactory") EntityManagerFactory fourthEntityManagerFactory) {
+        return new JpaTransactionManager(fourthEntityManagerFactory);
     }
 }

@@ -21,15 +21,15 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: User
+      POSTGRES_DB: Seller
     ports:
-      - '5450:5432'
+      - '5454:5432'
     volumes:
       - SellerData:/var/lib/postgresql/data
     networks:
       - bendis_seller
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "root", "-d", "User" ]  # Modified here
+      test: [ "CMD", "pg_isready", "-U", "root", "-d", "Seller" ]  # Modified here
       interval: 5s
       timeout: 5s
       retries: 5
@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: Product
     ports:
-      - '5451:5432'
+      - '5452:5432'
     volumes:
       - ProductData:/var/lib/postgresql/data
     networks:
@@ -60,7 +60,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: Order
     ports:
-      - '5452:5432'
+      - '5453:5432'
     volumes:
       - OrderData:/var/lib/postgresql/data
     networks:
