@@ -4,15 +4,15 @@ spring:
 
   datasource:
     second:
-      url: jdbc:postgresql://localhost:5452/Product
+      url: jdbc:postgresql://localhost:5451/Product
       username: root
       password: root
     third:
-      url: jdbc:postgresql://localhost:5453/Order
+      url: jdbc:postgresql://localhost:5455/Order
       username: root
       password: root
     fourth:
-      url: jdbc:postgresql://localhost:5454/Seller
+      url: jdbc:postgresql://localhost:5456/Seller
       username: root
       password: root
   jpa:

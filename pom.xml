@@ -62,12 +62,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Redis Docker Compose -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-docker-compose</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+
 
         <!-- JWT -->
         <dependency>
