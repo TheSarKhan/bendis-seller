@@ -1,0 +1,25 @@
+package com.sarkhan.backend.bendisseller.repository.product.items;
+
+import com.sarkhan.backend.bendisseller.model.product.items.SubCategory;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface SubCategoryRepository extends JpaRepository<SubCategory, Long> {
+    Optional<SubCategory> findByName(String name);
+
+    @Query(value = "select * from sub_categories where name % :name", nativeQuery = true)
+    List<SubCategory> searchByName(String name);
+
+    List<SubCategory> getByCategoryId(Long id);
+
+    @Query("select categoryId from SubCategory where id in :subCategoryIds")
+    List<Long> getCategoryIdsBySubCategoryIds(List<Long> subCategoryIds);
+
+    @Query("from SubCategory where categoryId in :categoryIds")
+    List<SubCategory> getByCategoryIds(List<Long> categoryIds);
+}

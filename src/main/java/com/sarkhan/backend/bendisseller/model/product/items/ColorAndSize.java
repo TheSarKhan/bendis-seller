@@ -1,9 +1,9 @@
 package com.sarkhan.backend.bendisseller.model.product.items;
 
+import com.sarkhan.backend.bendisseller.model.enums.Color;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ColorAndSize {
+
     Color color;
 
     Integer photoCount;

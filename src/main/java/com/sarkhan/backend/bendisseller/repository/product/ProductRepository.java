@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,20 +53,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             """)
     List<Product> getAllFavorite(Long userId);
 
-    @Query(value = """
-            select distinct elem->>'color' as color
-            from products,
-                 jsonb_array_elements(color_and_sizes) as elem
-            where sub_category_id = :subCategoryId
-            """, nativeQuery = true)
-    List<String> getDistinctColorsBySubCategoryId(Long subCategoryId);
-
-    @Query(value = """
-            select distinct jsonb_object_keys(elem->'sizeStockMap') as size
-            from product,
-                 jsonb_array_elements(color_and_sizes) as elem
-            where sub_category_id = :subCategoryId
-            """, nativeQuery = true)
-    List<String> getDistinctSizesBySubCategoryId(Long subCategoryId);
+    @Query("select p.id from Product p where p.name like lower(concat('%',:productName,'%') )")
+    List<Long> findIdsFromName(@Param("productName") String productName);
 
 }

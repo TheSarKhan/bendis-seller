@@ -1,0 +1,89 @@
+package com.sarkhan.backend.bendisseller.controller.product.items;
+
+import com.sarkhan.backend.bendisseller.dto.product.items.SubCategoryRequest;
+import com.sarkhan.backend.bendisseller.model.product.items.SubCategory;
+import com.sarkhan.backend.bendisseller.service.product.items.SubCategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/api/v1/sub-category")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "SubCategory", description = "Endpoints for managing sub-categories")
+public class SubCategoryController {
+    private final SubCategoryService service;
+
+    @PostMapping
+    @Operation(
+            summary = "Add a new sub-category",
+            description = "Creates a new sub-category based on the given request object. Only ADMINs can perform this operation."
+    )
+    public ResponseEntity<SubCategory> add(@RequestBody SubCategoryRequest request) {
+        return ResponseEntity.ok(service.add(request));
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "Get all sub-categories",
+            description = "Returns a list of all sub-categories in the system."
+    )
+    public ResponseEntity<List<SubCategory>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/id")
+    @Operation(
+            summary = "Get sub-category by ID",
+            description = "Returns the sub-category that matches the given ID."
+    )
+    public ResponseEntity<SubCategory> getById(@RequestParam Long id) {
+        return ResponseEntity.ok(service.getById(id));
+    }
+
+    @GetMapping("/name")
+    @Operation(
+            summary = "Get sub-category by name",
+            description = "Returns the sub-category that matches the given name."
+    )
+    public ResponseEntity<SubCategory> getByName(@RequestParam String name) {
+        return ResponseEntity.ok(service.getByName(name));
+    }
+
+    @GetMapping("/category")
+    @Operation(
+            summary = "Get sub-categories by category ID",
+            description = "Returns a list of sub-categories belonging to a specific category."
+    )
+    public ResponseEntity<List<SubCategory>> getByCategoryId(@RequestParam Long categoryId) {
+        return ResponseEntity.ok(service.getByCategoryId(categoryId));
+    }
+
+    @PutMapping
+    @Operation(
+            summary = "Update a sub-category",
+            description = "Updates a sub-category by ID using the provided request data. Only ADMINs can perform this action."
+    )
+    public ResponseEntity<SubCategory> update(@RequestParam Long id,
+                                              @RequestBody SubCategoryRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @DeleteMapping
+    @Operation(
+            summary = "Delete a sub-category",
+            description = "Deletes the sub-category with the specified ID. Only ADMINs can delete sub-categories."
+    )
+    public ResponseEntity<Void> delete(@RequestParam Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}

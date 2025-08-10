@@ -21,58 +21,58 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "com.sarkhan.backend.bendisseller.repository.order",
-        entityManagerFactoryRef = "thirdEntityManagerFactory", // Düzəliş
-        transactionManagerRef = "thirdTransactionManager"      // Düzəliş
+        basePackages = "com.sarkhan.backend.bendisseller.repository.comment",
+        entityManagerFactoryRef = "fifthEntityManagerFactory",
+        transactionManagerRef = "fifthTransactionManager"
 )
-public class OrderDbConfig {
+public class CommentDbConfig {
 
-    @Value("${spring.datasource.third.url}")
-    private String thirdDbUrl;
+    @Value("${spring.datasource.fifth.url}")
+    private String fifthDbUrl;
 
-    @Value("${spring.datasource.third.username}")
-    private String thirdDbUsername;
+    @Value("${spring.datasource.fifth.username}")
+    private String fifthDbUsername;
 
-    @Value("${spring.datasource.third.password}")
-    private String thirdDbPassword;
+    @Value("${spring.datasource.fifth.password}")
+    private String fifthDbPassword;
 
     @Value("${spring.jpa.hibernate.ddl-auto}")
-    private String thirdDbDdlAuto;
+    private String fifthDbDdlAuto;
 
-    @Bean(name = "thirdDataSource", destroyMethod = "close")
-    public HikariDataSource thirdDataSource() {
+    @Bean(name = "fifthDataSource")
+    public DataSource fifthDataSource() {
         HikariDataSource dataSource = DataSourceBuilder.create()
                 .type(HikariDataSource.class)
-                .url(thirdDbUrl)
-                .username(thirdDbUsername)
-                .password(thirdDbPassword)
+                .url(fifthDbUrl)
+                .username(fifthDbUsername)
+                .password(fifthDbPassword)
                 .build();
 
-        dataSource.setPoolName("OrderDbHikariPool");
+        dataSource.setPoolName("CommentDbHikariPool");
         return dataSource;
     }
 
-    @Bean(name = "thirdEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean thirdEntityManagerFactory(
+    @Bean(name = "fifthEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean fifthEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
-            @Qualifier("thirdDataSource") DataSource thirdDataSource) {
+            @Qualifier("fifthDataSource") DataSource fifthDataSource) {
         return builder
-                .dataSource(thirdDataSource)
-                .packages("com.sarkhan.backend.bendisseller.model.order")
-                .persistenceUnit("third")
+                .dataSource(fifthDataSource)
+                .packages("com.sarkhan.backend.bendisseller.model.comment")
+                .persistenceUnit("fifth")
                 .properties(hibernateProperties())
                 .build();
     }
 
-    @Bean(name = "thirdTransactionManager")
-    public PlatformTransactionManager thirdTransactionManager(
-            @Qualifier("thirdEntityManagerFactory") EntityManagerFactory thirdEntityManagerFactory) {
-        return new JpaTransactionManager(thirdEntityManagerFactory);
+    @Bean(name = "fifthTransactionManager")
+    public PlatformTransactionManager fifthTransactionManager(
+            @Qualifier("fifthEntityManagerFactory") EntityManagerFactory fifthEntityManagerFactory) {
+        return new JpaTransactionManager(fifthEntityManagerFactory);
     }
 
     private Map<String, Object> hibernateProperties() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", thirdDbDdlAuto);
+        properties.put("hibernate.hbm2ddl.auto", fifthDbDdlAuto);
         return properties;
     }
 }
