@@ -1,11 +1,14 @@
 package com.sarkhan.backend.bendisseller.jwt;
 
-import com.sarkhan.backend.bendisseller.service.SellerService;
+import com.sarkhan.backend.bendisseller.model.seller.SellerUserDetails;
+import com.sarkhan.backend.bendisseller.service.impl.SellerUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,12 +16,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-    private final SellerService sellerService;
+    private final @Lazy SellerUserDetailsService sellerUserDetailsService;
 
     private final JwtService jwtService;
 
@@ -34,34 +37,35 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String authorizationHeader = request.getHeader("Authorization");
-        String email = null;
+        String email;
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             email = jwtService.extractEmail(jwt);
+        } else {
+            email = null;
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtService.isTokenValid(jwt, email)) {
-                var seller = sellerService.getByBrandEmail(email);
-                System.out.println("Authenticated user: " + seller.getBrandEmail() + " | Role: " + seller.getRole());
-
-                List<SimpleGrantedAuthority> authorities =
-                        List.of(new SimpleGrantedAuthority("ROLE_" + seller.getRole()));
+                var sellerDetails = sellerUserDetailsService.loadUserByUsername(email);
+                var authorities = sellerDetails.getAuthorities();
                 SecurityContextHolder.getContext().setAuthentication(
-                        new UsernamePasswordAuthenticationToken(seller, null, authorities)
+                        new UsernamePasswordAuthenticationToken(sellerDetails, null, authorities)
                 );
+                System.out.println("Token is valid for user: " + email);
             } else {
-                System.out.println("Token is not valid");
+                System.out.println("Token is not valid for user: " + email);
             }
         } else {
             System.out.println("Email is null or already authenticated: " + email);
         }
+        System.out.println("Authorization header: " + authorizationHeader);
+        System.out.println("JWT token: " + jwt);
+        System.out.println("Extracted email: " + email);
+
 
         filterChain.doFilter(request, response);
     }
-
-
 }
-

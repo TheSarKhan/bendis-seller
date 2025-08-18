@@ -1,6 +1,5 @@
 package com.sarkhan.backend.bendisseller.model.seller;
 
-import com.sarkhan.backend.bendisseller.model.seller.Seller;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -49,8 +48,5 @@ public class SellerUserDetails implements UserDetails {
         return true;
     }
 
-    public Seller getSeller() {
-        return seller;
-    }
 }
 

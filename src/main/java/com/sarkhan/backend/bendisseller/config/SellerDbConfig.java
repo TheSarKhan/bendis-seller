@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Map;
 
 
 @Configuration
@@ -55,8 +56,13 @@ public class SellerDbConfig {
                 .dataSource(dataSource)
                 .packages("com.sarkhan.backend.bendisseller.model.seller")
                 .persistenceUnit("fourth")
+                .properties(Map.of(
+                        "hibernate.hbm2ddl.auto", "update",
+                        "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect"
+                ))
                 .build();
     }
+
 
     @Bean(name = "fourthTransactionManager")
     @Primary

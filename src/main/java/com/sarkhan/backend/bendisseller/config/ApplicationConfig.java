@@ -1,5 +1,7 @@
 package com.sarkhan.backend.bendisseller.config;
 
+import com.sarkhan.backend.bendisseller.repository.seller.SellerRepository;
+import com.sarkhan.backend.bendisseller.service.impl.SellerUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +20,6 @@ import java.util.HashMap;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -26,9 +27,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(SellerUserDetailsService sellerUserDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setUserDetailsService(sellerUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
@@ -47,4 +48,3 @@ public class ApplicationConfig {
         );
     }
 }
-

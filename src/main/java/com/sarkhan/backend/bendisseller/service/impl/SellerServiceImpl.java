@@ -74,4 +74,9 @@ public class SellerServiceImpl implements SellerService {
             return new NoSuchElementException("Cannot find user with " + email + " email.");
         });
     }
+
+    @Override
+    public boolean existsByEmail(String brandEmail) {
+        return sellerRepository.findByBrandEmail(brandEmail).isPresent();
+    }
 }
