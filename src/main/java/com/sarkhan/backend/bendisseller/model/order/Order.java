@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -19,24 +21,33 @@ import java.time.LocalDate;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long orderId;
+    @Column(name = "cart_id")
     private Long cartId;
+    @Column(name = "total_price")
     private BigDecimal totalPrice;
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
     @Enumerated(EnumType.STRING)
-    OrderStatus orderStatus;
-    LocalDate orderDate;
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
+    @Column(name = "order_date")
+    private LocalDate orderDate;
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    private List<OrderItem> orderItemList;
 
     @PrePersist
     public void setDefault() {
-        if (orderStatus==null) {
+        if (orderStatus == null) {
             this.orderStatus = OrderStatus.PENDING;
         }
-        orderDate=LocalDate.now();
+        orderDate = LocalDate.now();
+        updatedAt = LocalDateTime.now();
     }
 }

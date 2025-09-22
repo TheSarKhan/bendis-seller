@@ -17,12 +17,19 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @ToString.Exclude
     Order order;
+    @Column(name = "product_id")
     Long productId;
+    @Column(name = "seller_id")
     Long sellerId;
     Integer quantity;
     String color;
+    String size;
+    @Column(name = "total_price")
     BigDecimal totalPrice;
+    @Column(name = "delivery_fee")
+    BigDecimal deliveryFee;
 }

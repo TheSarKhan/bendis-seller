@@ -73,7 +73,7 @@ public class ProductMapper {
                 pluses,
                 product.getColorAndSizes(),
                 product.getSpecifications(),
-                product.getUpdateAt()!=null ?product.getUpdateAt():product.getCreateAt(),
+                product.getUpdateAt()!=null ?product.getUpdateAt():product.getCreatedAt(),
                 isFavorite,
                 comments
         );

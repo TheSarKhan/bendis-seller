@@ -21,18 +21,19 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "user_name", nullable = false)
     String userName;
 
-    @Column(nullable = false)
+    @Column(name = "product_id", nullable = false)
     Long productId;
 
     @Column(nullable = false)
     String content;
 
+    @Column(name = "useful_count")
     Long usefulCount;
 
     List<Long> useful;
@@ -41,9 +42,11 @@ public class Comment {
     double rating;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     LocalDateTime updatedAt;
 
     @PrePersist
