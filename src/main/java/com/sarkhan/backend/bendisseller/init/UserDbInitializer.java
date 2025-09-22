@@ -13,6 +13,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -28,6 +30,11 @@ public class UserDbInitializer {
                 .brandEmail("seller1234@gmail.com")
                 .password(passwordEncoder.encode("Seller123"))
                 .role(Role.SELLER)
+                .brandName("Seller Brand")
+                .brandVOEN("Seller VOEN")
+                .fatherName("Seller Father")
+                .updatedAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         if (!userService.existsByEmail(seller.getBrandEmail())) {
