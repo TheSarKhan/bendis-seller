@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/v1/sub-category")
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "SubCategory", description = "Endpoints for managing sub-categories")

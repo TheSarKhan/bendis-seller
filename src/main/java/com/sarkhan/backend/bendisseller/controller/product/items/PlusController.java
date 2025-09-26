@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/v1/plus")
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Plus", description = "Endpoints for managing Plus items (header, description, icon)")
